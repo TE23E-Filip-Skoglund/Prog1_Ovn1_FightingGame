@@ -1,31 +1,29 @@
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     static Random randomgenerator = new Random();
+    static Scanner myscan = new Scanner(System.in); // Ansvarar för att läsa av tangentbordet
 
 
     public static void main(String[] args) {
         System.out.println("Welcome to my fighting game");
 
-        // Contains the stats of the first character (hp, mana, damage)
-        ArrayList<Integer> stats1 = new ArrayList<>();
-        stats1.add(100);
-        stats1.add(randomgenerator.nextInt(21, 80));
-        stats1.add(randomgenerator.nextInt(21, 80));
+        int choice = chooseCharacter();
 
-        // Contains the stats of the second character (hp, mana, damage)
-        ArrayList<Integer> stats2 = new ArrayList<>();
-        stats2.add(100);
-        stats2.add(randomgenerator.nextInt(21, 80));
-        stats2.add(randomgenerator.nextInt(21, 80));
+        // Create the placeholders for the characters
+        ArrayList<Integer> mainCharacter;
+        ArrayList<Integer> enemy;
+        mainCharacter = createCharacter();
+        enemy = createCharacter();
 
-        // Print character stats to check if it works
-        System.out.println("Character 1 has " + stats1.getFirst() + " hp.");
-        System.out.println("Character 2 has " + stats2.getFirst() + " hp.");
+        startGame(mainCharacter, enemy);
 
+        /*
 
         // Initialize standard attack (smakareu attack)
         int newhp = standardAttack(stats1.get(2), stats2.getFirst());
@@ -39,10 +37,70 @@ public class Main {
         System.out.println("Charcter 2 hit character 1, \nThey now only have " + hpMana[0] + "hp left");
         System.out.println("Character 2 now has " + stats2.get(1) + " mana left");
 
+         */
+
         // TODO: Fix game loop in seperate method
         //          Start with user interaction
         //          After let AI hit back with random choice
         //          If time:  Make AI more clever in attack choice
+    }
+
+    public static void startGame(ArrayList<Integer> mainCharacter, ArrayList<Integer> enemy) {
+        System.out.println("DING DING DING 🔔🔔🔔");
+        System.out.println("START FIGHT 💪💪💪");
+
+        while (mainCharacter.getFirst() > 0 && enemy.getFirst() > 0) {
+            standardAttack(mainCharacter.get(2), enemy.getFirst());
+
+            int newHp = standardAttack(mainCharacter.get(2), enemy.getFirst());
+            enemy.set(0, newHp);
+            System.out.println("You hit the enemy, \nThey now have " + newHp + "hp left");
+
+            if (enemy.getFirst() < 0) {
+                System.out.println("You won!");
+                break;
+            } else {
+                newHp = standardAttack(enemy.get(2), mainCharacter.getFirst());
+                mainCharacter.set(0, newHp);
+                System.out.println("The enemy hit you, \nYou now have " + newHp + "hp left");
+            }
+
+        }
+    }
+
+
+    public static ArrayList<Integer> createCharacter() {
+        ArrayList<Integer> stats = new ArrayList<>();
+        stats.add(100);
+        stats.add(randomgenerator.nextInt(21, 80));
+        stats.add(randomgenerator.nextInt(21, 80));
+
+        return stats;
+    }
+
+    public static int chooseCharacter() {
+        int choice;
+
+        do {
+            System.out.println("Do you want to play as character 1 or character 2? (1-2)");
+            try {
+                choice = Integer.valueOf(myscan.nextLine());
+                System.out.println("You choose character " + choice);
+                switch (choice) {
+                    case 1, 2:
+                        return choice;
+                    default:
+                        System.out.println("That is not a valid choice. (1-2)");
+                        break;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("That is not a valid number");
+            }
+
+
+        } while (true);
+
+
     }
 
 
